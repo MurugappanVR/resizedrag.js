@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <meta charSet="utf-8"/>
+        <style>
+            body{
+                background-color: #e3e3e3;
+                overflow: hidden;
+            }
+            .drag-widget-title{
+                background-color: #0000FF;
+                color: white;
+                font-size: 24px;
+                padding: 10px;
+                
+            }
+            .drag-widget-container{
+                width: 20%;
+                height: 20%;
+                top: 20%;
+                left: 20%;
+
+                position: fixed;
+                margin: 0;
+                padding: 0;
+                z-index: 98;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="drag-widget-container" id="test" data-drag-enabled="true" style="background-color: #0096FF;">
+        </div>
+        <div class="drag-widget-container" id="test2" data-drag-enabled="true" style="background-color: rgb(174, 213, 129);">
+        </div>
+        <div class="drag-widget-container" id="test3" data-drag-enabled="true" style="background-color: rgb(239, 154, 154);">
+        </div>
+    </body>
+    <script type="module">
+        import { resizedrag } from '../resizedrag.js';
+
+        // Use the start/end events to simulate "snap to edge" behaviour.
+        const snapThreshold = 50;
+        function onStart(el, x, y) {
+            // On drag start, remove the fixed bottom style to prevent the bottom
+            // from sticking on the screen.
+            el.style.top = el.offsetTop + "px"
+            el.style.bottom = "auto"
+        }
+        function onEnd(el, x, y) {
+            console.log('end');
+            // Automatically snap to corners.
+            if (window.innerHeight - (el.offsetTop + el.offsetHeight) < snapThreshold) {
+                el.style.top = "auto"
+                el.style.bottom = "0px"
+            }
+            if (window.innerWidth - (el.offsetLeft + el.offsetWidth) < snapThreshold) {
+                el.style.left = "auto"
+                el.style.right = "0px"
+            }
+            if (el.offsetTop < snapThreshold) {
+                el.style.top = "0px"
+            }
+            if (el.offsetLeft < snapThreshold) {
+                el.style.left = "0px"
+            }
+        }
+
+        (function() {
+            resizedrag(document.querySelector("#test"),
+                document.querySelector("#test"), onStart, onEnd);
+
+                resizedrag(document.querySelector("#test2"),
+                document.querySelector("#test2"), onStart, onEnd);
+
+                resizedrag(document.querySelector("#test3"),
+                document.querySelector("#test3"), onStart, onEnd);
+        })();
+    </script>
+</html>
