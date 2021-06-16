@@ -16,22 +16,34 @@
             .drag-widget-container{
                 width: 20%;
                 height: 20%;
-                top: 20%;
-                left: 20%;
-
                 position: fixed;
                 margin: 0;
                 padding: 0;
                 z-index: 98;
             }
+            #test{
+                background-color: #0096FF;
+                top: 10%;
+                left: 20%;
+            }
+            #test2{
+                background-color: rgb(174, 213, 129);
+                top: 40%;
+                left: 50%;
+            }
+            #test3{
+                background-color: rgb(239, 154, 154);
+                top: 40%;
+                left: 10%;
+            }
         </style>
     </head>
     <body>
-        <div class="drag-widget-container" id="test" data-drag-enabled="true" style="background-color: #0096FF;">
+        <div class="drag-widget-container" id="test" data-drag-enabled="true">
         </div>
-        <div class="drag-widget-container" id="test2" data-drag-enabled="true" style="background-color: rgb(174, 213, 129);">
+        <div class="drag-widget-container" id="test2" data-drag-enabled="true">
         </div>
-        <div class="drag-widget-container" id="test3" data-drag-enabled="true" style="background-color: rgb(239, 154, 154);">
+        <div class="drag-widget-container" id="test3" data-drag-enabled="true">
         </div>
     </body>
     <script type="module">
