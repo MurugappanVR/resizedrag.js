@@ -2,8 +2,14 @@ let _loaded = false;
 let _callbacks = [];
 const _isTouch = window.ontouchstart !== undefined;
 export const resizedrag = function(target, handler, onStart, onEnd) {
-    let minWidth = 60;
-    let minHeight = 40;
+    let config = {
+        dragEnabled : target.dataset.rdDragEnabled !== "false",
+        resizeEnabled : target.dataset.rdResizeEnabled !== "false",
+        dragBorderEnabled : target.dataset.rdDragBorderEnabled !== "false",
+        rdDragBoundary : target.dataset.rdDragBoundary === "true",
+        minWidth : target.dataset.rdMinWidth ? target.dataset.rdMinWidth : 5 ,
+        minHeight : target.dataset.rdMinHeight ? target.dataset.rdMinHeight : 5
+    }
     let MARGINS = 4;
     let edges = {
         top : false,
@@ -27,7 +33,7 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
         mousedown : function(e) {
             e.stopPropagation();
             e.preventDefault();
-            if (target.dataset.dragEnabled === "false") {
+            if (!config.dragEnabled && !config.resizeEnabled) {
                 return;
             }
 
@@ -35,9 +41,6 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
             if (e.touches) {
                 c = e.touches[0];
             }
-            // target.style["border-style"]="dashed";
-            // target.style["border-color"]="grey";
-            // target.style["border-width"]="2px";
             isMoving = true;
             let bObj = attachResizeDragCursorStyle(c.clientX,c.clientY);
             clickedInstance = {
@@ -47,6 +50,11 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
                 h: bObj.b.height
             }
             isResizing = edges.right || edges.bottom || edges.top || edges.left;
+            if(!isResizing){
+                target.style["border-style"]="dashed";
+                target.style["border-color"]="grey";
+                target.style["border-width"]="2px";
+            }
             startX = target.offsetLeft - c.clientX;
             startY = target.offsetTop - c.clientY;
         },
@@ -55,11 +63,11 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
                 onEnd(target, parseInt(target.style.left), parseInt(target.style.top));
             }
             let c = e;
-            //target.style["border"]="none";
             attachResizeDragCursorStyle(c.clientX,c.clientY);
             isResizing = false;
             isMoving = false;
             hasStarted = false;
+            target.style["border"]="none";
         }
     }
   // Register a global event to capture mouse moves (once).
@@ -97,7 +105,7 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
     lastX = x + startX;
     lastY = y + startY;
     // If boundary checking is on, don't let the element cross the viewport.
-    if (target.dataset.dragBoundary === "true") {
+    if (config.rdDragBoundary) {
       if (lastX < 1 || lastX >= window.innerWidth - target.offsetWidth) {
         return;
       }
@@ -106,36 +114,33 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
       }
     }
     if(isMoving){
-        if(!isResizing){
+        if(!isResizing && config.dragEnabled){
             target.style.left = lastX + "px";
             target.style.top = lastY + "px";
         }else{
-            let b = target.getBoundingClientRect();
-            let bx = x - b.left;
-            let by = y - b.top;
-            if (edges.right) {
-                console.log("right "+x);
-                target.style.width = Math.max(bx, minWidth) + 'px';
-            }
-            if (edges.bottom) {
-                console.log("bottom");
-                target.style.height = Math.max(by, minHeight) + 'px';
-            }
-            if (edges.left) {
-                console.log("left "+JSON.stringify(clickedInstance));
-                var currentWidth = Math.max(clickedInstance.cx - x  + clickedInstance.w, minWidth);
-                console.log("curr width "+currentWidth);
-                if (currentWidth > minWidth) {
-                    target.style.width = currentWidth + 'px';
-                    target.style.left = x + 'px';	
+            if(config.resizeEnabled){
+                let b = target.getBoundingClientRect();
+                let bx = x - b.left;
+                let by = y - b.top;
+                if (edges.right) {
+                    target.style.width = Math.max(bx, config.minWidth) + 'px';
                 }
-            }
-            if (edges.top) {
-                console.log("top");
-                var currentHeight = Math.max(clickedInstance.cy - y  + clickedInstance.h, minHeight);
-                if (currentHeight > minHeight) {
-                    targetElement.style.height = currentHeight + 'px';
-                    targetElement.style.top = y + 'px';
+                if (edges.bottom) {
+                    target.style.height = Math.max(by, config.minHeight) + 'px';
+                }
+                if (edges.left) {
+                    var currentWidth = Math.max(clickedInstance.cx - x  + clickedInstance.w, config.minWidth);
+                    if (currentWidth > config.minWidth) {
+                        target.style.width = currentWidth + 'px';
+                        target.style.left = x + 'px';	
+                    }
+                }
+                if (edges.top) {
+                    var currentHeight = Math.max(clickedInstance.cy - y  + clickedInstance.h, config.minHeight);
+                    if (currentHeight > config.minHeight) {
+                        targetElement.style.height = currentHeight + 'px';
+                        targetElement.style.top = y + 'px';
+                    }
                 }
             }
         }
@@ -160,7 +165,7 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
     } else if (edges.bottom || edges.top) {
         targetElement.style.cursor = 'ns-resize';
     } else if(eX > 0 && eX < b.width && eY > 0 && eY < b.height){
-        targetElement.style.cursor = 'move';
+        targetElement.style.cursor = config.dragEnabled  ?'move':'not-allowed';
     }else {
         targetElement.style.cursor = 'default';
     }
