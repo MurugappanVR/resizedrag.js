@@ -1,6 +1,6 @@
 {
   "name": "resizedrag",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Tiny javascript library to make DOM elements movable & resizable",
   "main": "resizedrag.min.js",
   "scripts": {
