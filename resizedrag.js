@@ -1,7 +1,7 @@
 let _loaded = false;
 let _callbacks = [];
 const _isTouch = window.ontouchstart !== undefined;
-export const resizedrag = function(target, handler, onStart, onEnd) {
+const resizedrag = function(target, handler, onStart, onEnd) {
     let config = {
         dragEnabled : target.dataset.rdDragEnabled !== "false",
         resizeEnabled : target.dataset.rdResizeEnabled !== "false",
@@ -176,5 +176,4 @@ export const resizedrag = function(target, handler, onStart, onEnd) {
   }
 
 }
-
 export { resizedrag as default };
