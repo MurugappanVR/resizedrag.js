@@ -1,6 +1,6 @@
 # resizedrag.js
 
-![oops, broken image](resizedrag-screenshot.gif)
+![oops, broken image](https://murugappanvr-85105.web.app/resizedrag-screenshot.gif)
 
 Tiny js library to make DOM elements movable and resizable . [Demo Here](https://murugappanvr.github.io/resizedrag.js/) . This library has added resizing functionalities to the existing [dragdrop.js](https://github.com/knadh/dragmove.js) .
 
