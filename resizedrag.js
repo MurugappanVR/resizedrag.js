@@ -176,4 +176,4 @@ const resizedrag = function(target, handler, onStart, onEnd) {
   }
 
 }
-export { resizedrag as default };
+export { resizedrag };
